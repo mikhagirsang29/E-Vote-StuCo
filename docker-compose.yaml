@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: tunas_daud_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=voting_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  evoting-app:
+    images : votestuco-ws-pg:latest
+    container_name: tunas_daud_voting
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"
+    environment:
+      PYTHONUNBUFFERED: "1"
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/voting_db"
+    volumes:
+      # Persist uploaded candidate photos & images
+      - ./static/uploads:/app/static/uploads
+
+      # Change School Logo
+      # - ./static/logo_Sekolah.png:/app/static/logo_Sekolah.png
+
+volumes:
+  pgdata:

@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+sqlalchemy
+fastapi-cache2
+psycopg2-binary

@@ -1,0 +1,61 @@
+<form id="bulk-delete-form" hx-delete="/admin/users/bulk" hx-target="#voter-list-container">
+    
+    <table class="hidden md:table w-full text-left border-collapse bg-white shadow-sm rounded overflow-hidden">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="p-2 border w-10 text-center"><input type="checkbox" onclick="document.querySelectorAll('.user-cb').forEach(cb => cb.checked = this.checked)"></th>
+                <th class="p-2 border">Student ID</th>
+                <th class="p-2 border">System Role</th>
+            </tr>
+        </thead>
+        <tbody id="voter-list">
+            {% for voter in voters %}
+                {% include 'admin/user_row.html' %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="md:hidden space-y-3">
+        {% for voter in voters %}
+        <div class="bg-white p-4 rounded shadow flex items-center gap-4">
+            <input type="checkbox" name="user_ids" value="{{ voter.id }}" class="user-cb">
+            <div>
+                <p class="font-bold text-lg">{{ voter.student_id }}</p>
+                <p class="text-sm text-gray-500 uppercase tracking-widest">{{ voter.role }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</form>
+
+<!-- Pagination Controls -->
+<div class="flex justify-between items-center mt-4">
+    <div class="text-sm text-gray-600">
+        {% if q %}
+            Found <strong>{{ total_voters }}</strong> results for "{{ q }}" (Page {{ page }} of {{ total_pages }})
+        {% else %}
+            Showing page {{ page }} of {{ total_pages }} ({{ total_voters }} total students)
+        {% endif %}
+    </div>
+    
+    <div class="flex space-x-2">
+        {% if page > 1 %}
+            <button 
+                hx-get="/admin/users/list?page={{ page - 1 }}&q={{ q }}&voted_status={{ voted_status }}" 
+                hx-target="#voter-list-container" 
+                class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors text-sm font-medium">
+                Previous
+            </button>
+        {% endif %}
+        
+        {% if page < total_pages %}
+            <button 
+                hx-get="/admin/users/list?page={{ page + 1 }}&q={{ q }}&voted_status={{ voted_status }}" 
+                hx-target="#voter-list-container" 
+                class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors text-sm font-medium">
+                Next
+            </button>
+        {% endif %}
+    </div>
+</div>

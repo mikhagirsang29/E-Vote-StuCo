@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+    <h2 class="text-2xl font-bold mb-4">Voter Login</h2>
+    
+    <!-- URL parameter injection check for error messages -->
+    {% if request.query_params.error %}
+        <p class="text-red-500 mb-4">{{ request.query_params.error }}</p>
+    {% endif %}
+
+    <form action="/login" method="POST" class="space-y-4">
+        <div>
+            <label class="block font-medium">Student ID</label>
+            <input type="text" name="student_id" class="w-full border p-2 rounded" required>
+        </div>
+        <div>
+            <label class="block font-medium">Password</label>
+            <input type="password" name="password" class="w-full border p-2 rounded" required>
+            <p class="text-sm text-gray-500 mt-1">User dan Password akan diberikan oleh panitia</p>
+        </div>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Login to Vote</button>
+    </form>
+</div>
+{% endblock %}

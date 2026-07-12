@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-6 rounded-3xl shadow-lg mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 border border-blue-800">
+    <div>
+        <h2 class="text-xl font-extrabold tracking-tight">Election Lifecycle Control</h2>
+        <p class="text-blue-200 text-sm mt-0.5">Current Status: <span id="current-status-badge" class="font-bold text-yellow-400 bg-black/30 px-3 py-1 rounded-full uppercase ml-1">{{ status }}</span></p>
+        <p class="text-blue-200 text-sm mt-2">Turnout: <span class="font-bold text-white">{{ turnout_pct }}</span>% of registered students have voted.</p>
+    </div>
+    
+    <!-- Toggles change the database instantly via HTMX -->
+    <form hx-post="/admin/election/status" hx-target="#current-status-badge" hx-swap="innerHTML" class="flex bg-black/20 p-1.5 rounded-2xl border border-white/10">
+        <button type="submit" name="status" value="SETUP" class="px-4 py-2 rounded-xl text-xs font-bold hover:bg-white hover:text-gray-900 transition focus:bg-white focus:text-gray-900">1. SETUP</button>
+        <button type="submit" name="status" value="OPEN" class="px-4 py-2 rounded-xl text-xs font-bold hover:bg-green-500 hover:text-white transition focus:bg-green-500 focus:text-white">2. OPEN</button>
+        <button type="submit" name="status" value="CLOSED" class="px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-500 hover:text-white transition focus:bg-red-500 focus:text-white">3. CLOSE</button>
+    </form>
+</div>
+
+<div class="bg-gradient-to-r from-indigo-900 to-blue-900 text-white p-6 rounded-3xl shadow-lg mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 border border-blue-800">
+    <div>
+        <h2 class="text-xl font-extrabold tracking-tight">Receipt Lookup</h2>
+        <form hx-get="/admin/receipt" hx-target="#receipt-lookup-result" hx-swap="innerHTML" class="flex gap-2 flex-col sm:flex-row items-stretch sm:items-center">
+                <input type="text" name="receipt_id" placeholder="Receipt ID (e.g. A7-X9-K2)" class="flex-1 border border-white/20 rounded-xl px-3 py-2 bg-black/20 text-white placeholder:text-slate-300" required>
+                <button type="submit" class="bg-white text-slate-900 px-4 py-2 rounded-xl font-semibold hover:bg-slate-100 transition">Check</button>
+            </form>
+            <div id="receipt-lookup-result" class="mt-3 text-sm text-white"></div>
+        
+    </div>
+</div>
+
+<div class="bg-white p-6 rounded shadow mb-8">
+    <h2 class="text-xl font-bold mb-4">Admin Password</h2>
+    <form hx-post="/admin/password/change" hx-target="#password-change-status" hx-swap="innerHTML" hx-on::after-request="if(event.detail.successful) this.reset()" class="grid gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-[160px_minmax(0,1fr)] gap-3 items-center">
+            <label class="text-sm font-semibold">Current Password</label>
+            <input type="password" name="current_password" class="w-full border p-2 rounded" required>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[160px_minmax(0,1fr)] gap-3 items-center">
+            <label class="text-sm font-semibold">New Password</label>
+            <input type="password" name="new_password" class="w-full border p-2 rounded" required>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[160px_minmax(0,1fr)] gap-3 items-center">
+            <label class="text-sm font-semibold">Confirm Password</label>
+            <input type="password" name="confirm_password" class="w-full border p-2 rounded" required>
+        </div>
+        <div class="sm:col-span-2">
+            <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Update Password</button>
+        </div>
+        <div id="password-change-status"></div>
+    </form>
+</div>
+
+<div class="bg-white p-6 rounded shadow mb-8">
+    <h2 class="text-xl font-bold mb-4">Add Candidate</h2>
+    <form hx-post="/admin/candidates" hx-encoding="multipart/form-data" hx-target="#candidate-list" hx-swap="beforeend" hx-on::after-request="if(event.detail.successful) this.reset()" class="grid gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-center">
+            <label class="text-sm font-semibold">Name:</label>
+            <input type="text" name="name" class="w-full border p-2 rounded" required>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-center">
+            <label class="text-sm font-semibold">Position:</label>
+            <input type="text" name="position" value="President" class="w-full border p-2 rounded" required>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-start">
+            <label class="text-sm font-semibold pt-2">Visi dan Misi:</label>
+            <textarea name="manifesto" rows="4" placeholder="Use new lines for bullets or paragraphs..." class="w-full border p-2 rounded resize-none" required></textarea>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-center">
+            <label class="text-sm font-semibold">Photo:</label>
+            <input type="file" name="photo" accept="image/*" class="w-full border p-1.5 rounded bg-white cursor-pointer">
+        </div>
+        <div class="sm:col-span-2">
+            <button type="submit" class="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Add Candidate</button>
+        </div>
+    </form>
+</div>
+
+<div class="bg-white p-6 rounded shadow">
+    <h2 class="text-xl font-bold mb-4">Manage Candidates</h2>
+    <table class="w-full text-left border-collapse">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="p-2 border w-16 text-center">Photo</th>
+                <th class="p-2 border">Name</th>
+                <th class="p-2 border">Position</th>
+                <th class="p-2 border">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="candidate-list">
+            {% for candidate in candidates %}
+                {% include 'admin/candidate_row.html' %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- ======================================================================================== -->
+
+<div class="bg-white p-6 rounded shadow mb-8">
+    <h2 class="text-xl font-bold mb-4">Manage Voters</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+        <div class="border p-4 rounded bg-gray-50">
+            <h3 class="font-bold text-gray-700 mb-2">Add Single Student</h3>
+            <form hx-post="/admin/users/manual" 
+      hx-target="#voter-list" 
+      hx-swap="afterbegin" 
+      hx-on::after-request="if(event.detail.successful) this.reset()" 
+      class="space-y-3">
+                <input type="text" name="student_id" placeholder="Student ID" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" required>
+                <input type="text" name="password" placeholder="Temporary Password" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" required>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition-colors font-semibold">
+                    Add Student
+                </button>
+            </form>
+        </div>
+        
+        <div class="border p-4 rounded bg-gray-50">
+            <h3 class="font-bold text-gray-700 mb-2">Bulk Upload (Excel to CSV)</h3>
+            <p class="text-xs text-gray-600 mb-4">
+                In Excel, click <strong>File > Save As</strong> and choose <strong>CSV (Comma delimited) (*.csv)</strong>. <br>
+                <em>Format: Column A = Student ID, Column B = Password. Includes header row.</em>
+            </p>
+            
+            <form hx-post="/admin/users/bulk" 
+      hx-encoding="multipart/form-data" 
+      hx-target="#bulk-upload-status" 
+      hx-swap="innerHTML" 
+      hx-on::after-request="if(event.detail.successful) htmx.ajax('GET', '/admin/users/list', '#voter-list-container')"
+      class="space-y-3">
+                <input type="file" name="file" accept=".csv" class="w-full border p-2 rounded bg-white cursor-pointer" required>
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded w-full hover:bg-green-700 transition-colors font-semibold">
+                    Upload & Import Data
+                </button>
+            </form>
+            <div id="bulk-upload-status"></div>
+        </div>
+    </div>
+
+    <!-- Table Controls -->
+<!-- Table Controls, Search & Turnout Filter -->
+<div id="roster-controls" class="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-3 mt-8 gap-4">
+    
+    <!-- Left: Search & Filter Inputs -->
+    <div class="w-full lg:w-2/3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        <h3 class="font-bold text-gray-700 whitespace-nowrap mr-2">Student Roster</h3>
+        
+        <!-- Search Input -->
+        <input 
+            type="search" 
+            name="q" 
+            placeholder="Search by Student ID..." 
+            class="flex-1 border p-1.5 px-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-gray-50"
+            hx-get="/admin/users/list"
+            hx-trigger="keyup changed delay:400ms, search"
+            hx-include="#roster-controls *"
+            hx-target="#voter-list-container">
+
+        <!-- Turnout Filter Dropdown -->
+        <select 
+            name="voted_status" 
+            class="border p-1.5 px-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-gray-50 font-medium cursor-pointer"
+            hx-get="/admin/users/list"
+            hx-trigger="change"
+            hx-include="#roster-controls *"
+            hx-target="#voter-list-container">
+            <option value="all">All Students</option>
+            <option value="voted">✅ Have Voted</option>
+            <option value="unvoted">❌ Have Not Voted</option>
+        </select>
+    </div>
+
+    <!-- Right: Existing Danger Buttons -->
+    <div class="space-x-2 whitespace-nowrap self-end">
+        <button form="bulk-delete-form" type="submit" class="bg-yellow-500 text-white px-3 py-1.5 rounded-xl text-sm font-semibold hover:bg-yellow-600 transition shadow-xs">
+            Delete Selected
+        </button>
+        <button hx-delete="/admin/users/all" hx-target="#voter-list-container" hx-swap="innerHTML" hx-confirm="WARNING: This will permanently erase ALL students and their votes. Continue?" class="bg-red-600 text-white px-3 py-1.5 rounded-xl text-sm font-semibold hover:bg-red-700 transition shadow-xs">
+            Wipe All Students
+        </button>
+    </div>
+</div>
+
+<div id="voter-list-container">
+    {% include 'admin/voter_list.html' %}
+</div>
+</div>
+</div>
+
+<!-- =================================================================================================== -->
+
+<div class="bg-white p-6 rounded shadow border-t-4 border-red-600 mt-8">
+    <h2 class="text-xl font-bold text-red-600 mb-2">Danger Zone</h2>
+    <p class="text-gray-600 mb-4 text-sm">This action cannot be undone. It will wipe all recorded votes from the database and reset the live results to zero.</p>
+    
+    <div id="reset-status-message" class="mb-4"></div>
+    
+    <button 
+        hx-delete="/admin/votes/reset" 
+        hx-target="#reset-status-message"
+        hx-swap="innerHTML"
+        hx-confirm="WARNING: You are about to DELETE ALL VOTES. Are you absolutely sure?"
+        class="bg-red-600 text-white font-bold py-2 px-4 rounded hover:bg-red-700 transition-colors">
+        Reset Entire Election
+    </button>
+</div>
+{% endblock %}

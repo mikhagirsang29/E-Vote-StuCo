@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Council Election</title>
+    <script src="/static/tailwind.js"></script>
+    <script src="/static/htmx.min.js"></script>
+    <script src="/static/ws.js"></script>
+</head>
+<!-- Inside templates/base.html -->
+<body class="bg-gray-50 text-gray-800 font-sans antialiased selection:bg-blue-500 selection:text-white">
+
+    <!-- Modern Sticky Glassmorphism Navbar -->
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/80 shadow-sm transition-all">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+            
+            <!-- Left: School Branding & Logo -->
+            <a href="/" class="flex items-center gap-3 group">
+                <img 
+        src="/static/logo_Sekolah.png" 
+        alt="Sekolah Kristen Tunas Daud Logo" 
+        class="w-10 h-10 sm:w-11 sm:h-11 object-contain rounded-xl group-hover:scale-105 transition-transform duration-200">
+                <div>
+                    <span class="font-extrabold text-gray-900 tracking-tight text-base sm:text-lg block leading-none group-hover:text-blue-600 transition-colors">Sekolah Kristen Tunas Daud</span>
+                    <span class="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider">E-Voting Portal</span>
+                </div>
+            </a>
+
+            <!-- Center/Right: Navigation Links & User Profile -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                
+                {% if user %}
+                    <!-- Quick Nav Links -->
+                     {% if user.role == "admin" %}
+                        <nav class="hidden md:flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/60 text-xs font-semibold mr-2">
+                            <a href="/admin" class="px-3 py-1.5 rounded-full hover:bg-white hover:text-blue-600 hover:shadow-xs transition-all text-gray-600">Admin Panel</a>
+                            <a href="/results" class="px-3 py-1.5 rounded-full hover:bg-white hover:text-blue-600 hover:shadow-xs transition-all text-gray-600">Live Feed</a>
+                        </nav>
+                    {% endif %}
+
+                    <!-- User Pill Badge with Live Green Status Dot -->
+                    <div class="flex items-center gap-2 bg-gray-100/80 border border-gray-200/80 px-3 py-1.5 rounded-full text-sm font-medium text-gray-700 shadow-xs">
+                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse" title="Active Session"></div>
+                        <span class="text-xs sm:text-sm font-bold text-gray-800">{{ user.student_id }}</span>
+                        
+                        {% if user.role == "admin" %}
+                            <span class="bg-blue-600 text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider shadow-xs">Admin</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Modern Sign Out Button -->
+                    <form action="/logout" method="POST" class="inline m-0">
+                        <button type="submit" title="Sign Out" class="flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-colors border border-red-100 active:scale-95">
+                            <span class="hidden sm:inline">Sign Out</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        </button>
+                    </form>
+                {% else %}
+                    <!-- Fallback if not logged in -->
+                    <span class="text-xs text-gray-400 font-medium bg-gray-100 px-3 py-1.5 rounded-full">Not Logged In</span>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto p-4 mt-6 max-w-5xl">
+        {% block content %}{% endblock %}
+    </main>
+
+    <div id="custom-modal-backdrop" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4 transition-opacity duration-200 opacity-0">
+        
+        <div id="custom-modal-content" class="bg-white/10 border border-white/20 text-white rounded-[28px] max-w-md w-full p-6 shadow-2xl shadow-cyan-500/10 backdrop-blur-2xl transform scale-95 transition-transform duration-200">
+            
+            <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center text-cyan-300 mb-4 shadow-inner backdrop-blur-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            </div>
+
+            <h3 id="custom-modal-title" class="text-xl font-extrabold tracking-tight text-white">Official Ballot Confirmation</h3>
+            <p id="custom-modal-message" class="text-slate-200 text-sm mt-2 leading-relaxed whitespace-pre-line"></p>
+
+            <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                <button id="custom-modal-cancel" type="button" class="flex-1 bg-white/10 hover:bg-white/15 text-white font-bold py-3 px-4 rounded-2xl border border-white/10 transition text-sm backdrop-blur-xl">
+                    Cancel
+                </button>
+                <button id="custom-modal-confirm" type="button" class="flex-1 bg-cyan-500/95 hover:bg-cyan-400/95 text-white font-bold py-3 px-4 rounded-2xl transition shadow-lg shadow-cyan-500/20 text-sm flex items-center justify-center gap-2">
+                    <span id="custom-modal-confirm-text">Yes, Cast My Vote</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="manifesto-modal-backdrop" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4 transition-opacity duration-200 opacity-0">
+        <div id="manifesto-modal-content" class="bg-white/10 border border-white/15 text-white rounded-[32px] max-w-2xl w-full p-6 shadow-2xl shadow-cyan-500/10 backdrop-blur-2xl transform scale-95 transition-transform duration-200 max-h-[85vh] overflow-hidden">
+            <div class="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.2em] text-cyan-300 font-bold">Visi dan Misi</p>
+                    <h3 id="manifesto-modal-title" class="text-2xl font-extrabold tracking-tight text-white mt-2">Candidate Manifesto</h3>
+                </div>
+                <button id="manifesto-modal-close" type="button" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15 transition backdrop-blur-xl">
+                    Close
+                </button>
+            </div>
+            <div id="manifesto-modal-body" class="text-slate-200 text-sm leading-7 space-y-4 whitespace-pre-line overflow-y-auto max-h-[calc(85vh-130px)] pr-2"></div>
+        </div>
+    </div>
+    <script src="/script/confirmation.js?v=4.0" defer></script>
+
+</body>
+</html>

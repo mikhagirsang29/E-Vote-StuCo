@@ -1,0 +1,20 @@
+<tr id="cand-row-{{ candidate.id }}" class="hover:bg-gray-50">
+    <td class="p-2 border text-center">
+        {% if candidate.photo_path %}
+            <img src="{{ candidate.photo_path }}" alt="Photo" class="w-10 h-10 object-cover rounded-full mx-auto shadow-sm">
+        {% else %}
+            <div class="w-10 h-10 bg-gray-200 rounded-full mx-auto flex items-center justify-center text-gray-400 text-xs shadow-sm">No Pic</div>
+        {% endif %}
+    </td>
+    <td class="p-2 border font-medium">{{ candidate.name }}</td>
+    <td class="p-2 border">{{ candidate.position }}</td>
+    <td class="p-2 border">
+        <button 
+            hx-delete="/admin/candidates/{{ candidate.id }}" 
+            hx-target="#cand-row-{{ candidate.id }}"
+            hx-swap="delete"
+            class="bg-red-500 text-white text-sm px-2 py-1 rounded hover:bg-red-600">
+            Remove
+        </button>
+    </td>
+</tr>
