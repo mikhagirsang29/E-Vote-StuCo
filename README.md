@@ -101,7 +101,8 @@ Once your server is running (either via Docker or Uvicorn), open your web browse
 
 ---
 
-🗂️ Project Structure
+## 🗂️ Project Structure
+```plaintext
 voteStuco/
 ├── data/                  # Persistent SQLite database folder (voting.db resides here)
 ├── routes/                # Isolated FastAPI route modules (admin.py, client.py)
@@ -113,10 +114,11 @@ voteStuco/
 ├── main.py                # FastAPI application entrypoint & WebSocket routes
 ├── ws_manager.py          # Shared WebSocket connection manager
 └── requirements.txt       # Python dependency list
+```
 
 ---
 
-🤝 Contributing
+## 🤝 Contributing
 Contributions are always welcome! Please follow these steps:
 1. Fork the project repository.
 2. Create a new feature branch (git checkout -b feature/AmazingFeature).
@@ -124,5 +126,5 @@ Contributions are always welcome! Please follow these steps:
 4. Push to the branch (git push origin feature/AmazingFeature).
 5. Open a Pull Request.
 
-📄 License
+## 📄 License
 This project is licensed under the GNU General Public License (GPL) License
