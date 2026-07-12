@@ -103,7 +103,7 @@
             <form hx-post="/admin/users/manual" 
       hx-target="#voter-list" 
       hx-swap="afterbegin" 
-      hx-on::after-request="if(event.detail.successful) {this.reset(); htmx.ajax('GET', '/admin/users/list', '#voter-list-container')}
+      hx-on::after-request="if(event.detail.successful) { this.reset(); htmx.ajax('GET', '/admin/users/list', '#voter-list-container'); }
       class="space-y-3">
                 <input type="text" name="student_id" placeholder="Student ID" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" required>
                 <input type="text" name="password" placeholder="Temporary Password" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" required>
