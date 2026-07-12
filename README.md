@@ -28,8 +28,8 @@ This setup is ideal for election day on your school LAN. It includes volume mapp
 
 ### 1. Clone the Repository
 ```bash
-git clone [https://github.com/your-username/voteStuco.git](https://github.com/your-username/voteStuco.git)
-cd voteStuco
+git clone https://github.com/<your-username>/E-Vote-StuCo.git
+cd E-Vote-StuCo
 ```
 
 ### 2. Prepare Data Directories
@@ -51,8 +51,8 @@ If you are developing new features, modifying UI components, or debugging locall
 
 ### 1. Clone and Navigate to the Project
 ```bash
-git clone [https://github.com/your-username/voteStuco.git](https://github.com/your-username/voteStuco.git)
-cd voteStuco
+git clone https://github.com/<your-username>/E-Vote-StuCo.git
+cd E-Vote-StuCo
 ```
 
 ### 2. Create a Virtual Environment
