@@ -43,7 +43,7 @@ Run Docker Compose in detached mode (-d):
 ```bash
 docker compose up -d --build
 ```
-
+NOTE : the default admin username is `admin` and the password is `password`, you can change the admin password in the admin page
 
 ## 💻 Option 2: Local Development Setup (Python & Uvicorn)
 
@@ -88,6 +88,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 NOTE : change the port to your need
 - The --reload flag tells Uvicorn to automatically restart the server whenever you save changes to your .py, .html, or .js files.
 - The --host 0.0.0.0 flag makes the development server accessible to other devices connected to your local Wi-Fi/LAN network.
+- the default admin username is `admin` and the password is `password`, you can change the admin password in the admin page
 
 ---
 
