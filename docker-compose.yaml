@@ -13,7 +13,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   evoting-app:
-    images : votestuco-ws-pg:latest
+    image : votestuco-ws-pg:latest
     container_name: tunas_daud_voting
     restart: unless-stopped
     depends_on:
