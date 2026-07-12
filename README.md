@@ -97,7 +97,7 @@ Once your server is running (either via Docker or Uvicorn), open your web browse
 | :--- | :--- | :--- |
 | **Voter Dashboard** | `http://localhost:8000/` | The main voting portal where students cast their ballots. |
 | **Admin Panel** | `http://localhost:8000/admin` | Manage candidates, students, and toggle the election state (`SETUP`, `OPEN`, `CLOSED`). |
-| **Live Results Feed** | `http://localhost:8000/results` | Watch live WebSocket bar charts update instantly when an election is `OPEN`, or view the trophy tally when `CLOSED`. |
+| **Live Results Feed (Admin Only when election is `OPEN`)** | `http://localhost:8000/results` | Watch live WebSocket bar charts update instantly when an election is `OPEN`, or view the trophy tally when `CLOSED`. |
 
 ---
 
