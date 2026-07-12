@@ -2,6 +2,10 @@
 
 A modern, real-time, and secure LAN E-Voting web application built for student council elections. Powered by **FastAPI**, **HTMX**, **Postgresql / SQLite (WAL Mode)**, and **WebSockets** for instant live election result broadcasting without requiring browser page refreshes.
 
+## 💻 DEMO
+you can try the WebApp here :
+https://e-vote-stuco.onrender.com
+
 ---
 
 ## ✨ Features
