@@ -128,4 +128,4 @@ Contributions are always welcome! Please follow these steps:
 5. Open a Pull Request.
 
 ## 📄 License
-This project is licensed under the GNU General Public License (GPL) License
+This project is licensed under the GPL-3.0 license
