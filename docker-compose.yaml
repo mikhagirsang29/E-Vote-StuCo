@@ -2,9 +2,6 @@ version: '3.8'
 
 services:
   postgres:
-    build:
-      context: .
-      dockerfile: Dockerfile
     image: postgres:15-alpine
     container_name: tunas_daud_postgres
     restart: unless-stopped
@@ -16,6 +13,9 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   evoting-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image : votestuco-ws-pg:latest
     container_name: tunas_daud_voting
     restart: unless-stopped
