@@ -6,6 +6,9 @@ A modern, real-time, and secure LAN E-Voting web application built for student c
 you can try the WebApp here :
 https://e-vote-stuco.onrender.com
 
+default admin user is
+username : admin
+password : password
 ---
 
 ## ✨ Features
