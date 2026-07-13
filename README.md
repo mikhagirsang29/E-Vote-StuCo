@@ -111,23 +111,6 @@ Once your server is running (either via Docker or Uvicorn), open your web browse
 
 ---
 
-## 🗂️ Project Structure
-```plaintext
-voteStuco/
-├── data/                  # Persistent SQLite database folder (voting.db resides here)
-├── routes/                # Isolated FastAPI route modules (admin.py, client.py)
-├── static/                # Static assets (Tailwind CSS, HTMX, custom scripts, uploads)
-├── templates/             # Jinja2 HTML templates & HTMX fragments
-├── Dockerfile             # Container instructions (Python 3.14-slim base)
-├── docker-compose.yaml    # Container orchestration & persistent volume mappings
-├── database.py            # SQLAlchemy database setup & SQLite WAL mode pragma
-├── main.py                # FastAPI application entrypoint & WebSocket routes
-├── ws_manager.py          # Shared WebSocket connection manager
-└── requirements.txt       # Python dependency list
-```
-
----
-
 ## 🤝 Contributing
 Contributions are always welcome! Please follow these steps:
 1. Fork the project repository.
