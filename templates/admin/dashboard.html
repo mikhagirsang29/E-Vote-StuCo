@@ -103,11 +103,11 @@
             <form hx-post="/admin/users/manual" 
       hx-target="#voter-list" 
       hx-swap="afterbegin" 
-      hx-on::after-request="if(event.detail.successful) { this.reset(); htmx.ajax('GET', '/admin/users/list', '#voter-list-container'); }
+      hx-on::after-request="if(event.detail.successful) this.reset()" 
       class="space-y-3">
                 <input type="text" name="student_id" placeholder="Student ID" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" required>
                 <input type="text" name="password" placeholder="Temporary Password" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" required>
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition-colors font-semibold">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition-colors font-semibold" hx-get="/admin/users/list" hx-target="#voter-list-container" hx-swap="innerHTML">
                     Add Student
                 </button>
             </form>
