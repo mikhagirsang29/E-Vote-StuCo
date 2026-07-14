@@ -115,9 +115,7 @@ Once your server is running (either via Docker or Uvicorn), open your web browse
 
 ### 1. Test Overview & Configuration
 We utilized Locust to simulate a high-traffic election scenario, ensuring the FastAPI backend and database can handle rapid concurrent voting.
-
 Configuration Parameters:
-
 Target Host: http://localhost:8000
 
 Peak Concurrent Users: 1,000
