@@ -76,7 +76,7 @@ async def submit_vote(request: Request, candidate_id: int = Form(...), db: Sessi
         total_votes = sum([r.count for r in results])
         safe_total = total_votes if total_votes > 0 else 1
         
-        formatted = [{"name": r.name, "position": r.position, "photo_path": r.photo_path, "votes": r.count, "percentage": round((r.count/safe_total)*100, 1)} for r in results]
+        formatted = [{"id": r.id, "name": r.name, "position": r.position, "photo_path": r.photo_path, "votes": r.count, "percentage": round((r.count/safe_total)*100, 1)} for r in results]
         formatted.sort(key=lambda x: x["votes"], reverse=True)
         
         # 2. Render the HTML fragment
@@ -92,7 +92,7 @@ async def submit_vote(request: Request, candidate_id: int = Form(...), db: Sessi
             name="client/doneVoting.html",
             context={"user": user, "receipt_id": receipt_id}
         )
-    except Exception:
+    except Exception as e:
         db.rollback()
         return HTMLResponse("<div class='p-4 bg-red-100 text-red-700 rounded'>Error: You have already voted.</div>")
 
