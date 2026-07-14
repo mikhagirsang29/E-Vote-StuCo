@@ -116,48 +116,33 @@ Once your server is running (either via Docker or Uvicorn), open your web browse
 ### 1. Test Overview & Configuration
 We utilized Locust to simulate a high-traffic election scenario, ensuring the FastAPI backend and database can handle rapid concurrent voting.<br>
 Configuration Parameters:<br>
-Target Host: http://localhost:8000
-
-Peak Concurrent Users: 1,000
-
-Spawn Rate: 50 users per second (ramp-up time to peak load is 20 seconds)
-
-Total Duration: 2 minutes
+Target Host: http://localhost:8000<br>
+Peak Concurrent Users: 1,000<br>
+Spawn Rate: 50 users per second (ramp-up time to peak load is 20 seconds)<br>
+Total Duration: 2 minutes<br>
 
 Execution Command:
-
+```
 locust -f locustfile.py --headless -u 1000 -r 50 --run-time 2m --host=http://localhost:8000
-
+```
 
 ### 2. Key Metrics Monitored
-
-When evaluating the Locust output, we looked for the following health indicators:
-
-RPS (Requests Per Second): Indicates the throughput of the server.
-
-Failure Rate: Ideally 0%. Failures usually indicate database locks, connection pool exhaustion, or server timeouts.
-
-Response Times: We aim for < 500ms median response times.
+When evaluating the Locust output, we looked for the following health indicators:<br>
+RPS (Requests Per Second): Indicates the throughput of the server.<br>
+Failure Rate: Ideally 0%. Failures usually indicate database locks, connection pool exhaustion, or server timeouts.<br>
+Response Times: We aim for < 500ms median response times.<br>
 
 ### 3. Test Results
-
-The test successfully simulated 1,000 concurrent students logging in and casting their votes over a 2-minute window.
-
-Total Requests: 2,000 (1,000 Logins, 1,000 Votes)
-
-Failures: 0 (0.00%) 🎉
-
-Average RPS: 89.20 req/s
-
-Response Time: Median: 190 ms | Average: 547 ms
+The test successfully simulated 1,000 concurrent students logging in and casting their votes over a 2-minute window.<br>
+Total Requests: 2,000 (1,000 Logins, 1,000 Votes)<br>
+Failures: 0 (0.00%) 🎉<br>
+Average RPS: 89.20 req/s<br>
+Response Time: Median: 190 ms | Average: 547 ms<br>
 
 ### 4. Analysis & Architecture Validation
-
-The server handled the 1,000-user stress test flawlessly with a 0% failure rate.
-
-Database Stability: Handling 1,000 simultaneous writes without a single database lock or dropped transaction proves the architecture is highly resilient under load.
-
-Real-time Performance: The FastAPI WebSocket ConnectionManager successfully maintained the connections and broadcasted 1,000 real-time HTMX snippet updates without crashing the asynchronous event loop.
+The server handled the 1,000-user stress test flawlessly with a 0% failure rate.<br>
+Database Stability: Handling 1,000 simultaneous writes without a single database lock or dropped transaction proves the architecture is highly resilient under load.<br>
+Real-time Performance: The FastAPI WebSocket ConnectionManager successfully maintained the connections and broadcasted 1,000 real-time HTMX snippet updates without crashing the asynchronous event loop.<br>
 
 ---
 
