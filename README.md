@@ -12,17 +12,17 @@ password : password
 ```
 
 <div align="center">
-  <h1>Vote Page</h1>
+  <h2>Vote Page</h2>
   <img src="./demo_images/vote_screen.png" alt="Dashboard Screenshot" width="600">
 </div>
 
 <div align="center">
-  <h1>Live Ballots Page</h1>
+  <h2>Live Ballots Page</h2>
   <img src="./demo_images/live_ballots.png" alt="Dashboard Screenshot" width="600">
 </div>
 
 <div align="center">
-  <h1>Admin Page</h1>
+  <h2>Admin Page</h2>
   <img src="./demo_images/admin.png" alt="Dashboard Screenshot" width="600">
 </div>
 
