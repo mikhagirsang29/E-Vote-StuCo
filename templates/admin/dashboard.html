@@ -28,6 +28,37 @@
 </div>
 
 <div class="bg-white p-6 rounded shadow mb-8">
+    <h2 class="text-xl font-bold mb-4">Site Branding</h2>
+    <p class="text-sm text-gray-600 mb-4">Update the site logo and displayed school name or subtitle.</p>
+    <form hx-post="/admin/branding" hx-encoding="multipart/form-data" hx-target="#branding-status" hx-swap="innerHTML" hx-on::after-request="if(event.detail.successful) this.reset()" class="grid gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-center">
+            <label class="text-sm font-semibold">School Name</label>
+            <input type="text" name="school_name" value="{{ branding.school_name if branding else 'Sekolah Kristen Tunas Daud' }}" class="w-full border p-2 rounded" required>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-center">
+            <label class="text-sm font-semibold">Portal Subtitle</label>
+            <input type="text" name="portal_subtitle" value="{{ branding.portal_subtitle if branding else 'E-Voting Portal' }}" class="w-full border p-2 rounded" required>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-center">
+            <label class="text-sm font-semibold">Browser Title</label>
+            <input type="text" name="browser_title" value="{{ branding.browser_title if branding else 'Student Council Election' }}" class="w-full border p-2 rounded">
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-center">
+            <label class="text-sm font-semibold">Logo Image</label>
+            <input type="file" name="logo" accept="image/*" class="w-full border p-1.5 rounded bg-white cursor-pointer">
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-center">
+            <label class="text-sm font-semibold">Favicon</label>
+            <input type="file" name="favicon" accept="image/*,.ico" class="w-full border p-1.5 rounded bg-white cursor-pointer">
+        </div>
+        <div class="sm:col-span-2">
+            <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Update Branding</button>
+        </div>
+        <div id="branding-status"></div>
+    </form>
+</div>
+
+<div class="bg-white p-6 rounded shadow mb-8">
     <h2 class="text-xl font-bold mb-4">Admin Password</h2>
     <form hx-post="/admin/password/change" hx-target="#password-change-status" hx-swap="innerHTML" hx-on::after-request="if(event.detail.successful) this.reset()" class="grid gap-4">
         <div class="grid grid-cols-1 sm:grid-cols-[160px_minmax(0,1fr)] gap-3 items-center">

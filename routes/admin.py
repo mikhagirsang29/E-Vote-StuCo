@@ -16,7 +16,7 @@ from fastapi_cache.decorator import cache
 from fastapi_cache import FastAPICache
 
 import database
-from database import User, Candidate, Vote, ElectionState
+from database import User, Candidate, Vote, ElectionState, SiteBranding
 from utilities.utilities import get_db, get_current_user
 
 admin_router = APIRouter()
@@ -115,6 +115,7 @@ async def admin_dashboard(request: Request, db: Session = Depends(get_db)):
     voted_students = db.query(User).filter(User.role == "student", User.votes.any()).count()
     turnout_pct = (voted_students / total_students * 100) if total_students > 0 else 0
 
+    branding = db.query(SiteBranding).filter(SiteBranding.id == 1).first()
     return templates.TemplateResponse(
         request=request,
         name="admin/dashboard.html",
@@ -128,7 +129,8 @@ async def admin_dashboard(request: Request, db: Session = Depends(get_db)):
             "q": "",
             "status": state.status if state else "SETUP",
             "voted_status": "all",
-            "turnout_pct": round(turnout_pct, 1)
+            "turnout_pct": round(turnout_pct, 1),
+            "branding": branding
         }
     )
 
@@ -179,10 +181,11 @@ async def results_page(request: Request, db: Session = Depends(get_db)):
     if user.role != "admin" and state.status == "OPEN":
         return RedirectResponse(url="/", status_code=303)
     else:
+        branding = db.query(SiteBranding).filter(SiteBranding.id == 1).first()
         return templates.TemplateResponse(
             request=request,
             name="admin/results.html",
-            context={"user": user, "state": state.status if state else "SETUP"}
+            context={"user": user, "state": state.status if state else "SETUP", "branding": branding}
         )
 
 
@@ -356,6 +359,52 @@ async def add_users_bulk(
         return HTMLResponse(
             f"<div class='p-3 mt-2 bg-red-100 text-red-700 border border-red-400 rounded shadow-sm'>Error parsing file. Detail: {str(e)}</div>"
         )
+
+
+@admin_router.post("/admin/branding", response_class=HTMLResponse)
+async def update_site_branding(
+    request: Request,
+    school_name: str = Form(...),
+    portal_subtitle: str = Form(...),
+    logo: UploadFile = File(None),
+    favicon: UploadFile = File(None),
+    browser_title: str = Form(""),
+    db: Session = Depends(get_db)
+):
+    user = get_current_user(request, db)
+    if not user or user.role != "admin":
+        return HTMLResponse("Unauthorized", status_code=403)
+
+    branding = db.query(SiteBranding).filter(SiteBranding.id == 1).first()
+    if not branding:
+        branding = SiteBranding(id=1)
+        db.add(branding)
+
+    if logo and logo.filename:
+        ext = logo.filename.split(".")[-1]
+        unique_filename = f"{uuid.uuid4()}.{ext}"
+        filepath = f"static/uploads/{unique_filename}"
+        with open(filepath, "wb") as buffer:
+            shutil.copyfileobj(logo.file, buffer)
+        branding.logo_path = filepath
+
+    if favicon and favicon.filename:
+        fext = favicon.filename.split(".")[-1]
+        funique = f"{uuid.uuid4()}.{fext}"
+        fpath = f"static/uploads/{funique}"
+        with open(fpath, "wb") as buffer:
+            shutil.copyfileobj(favicon.file, buffer)
+        branding.favicon_path = fpath
+
+    branding.school_name = school_name.strip() or branding.school_name or "Sekolah Kristen Tunas Daud"
+    branding.portal_subtitle = portal_subtitle.strip() or branding.portal_subtitle or "E-Voting Portal"
+    branding.browser_title = browser_title.strip() or branding.browser_title or "Student Council Election"
+    db.commit()
+    await FastAPICache.clear()
+
+    return HTMLResponse(
+        "<div class='p-3 mb-4 bg-green-100 text-green-700 border border-green-400 rounded shadow-sm'>Branding updated successfully.</div>"
+    )
 
 
 @admin_router.post("/admin/password/change", response_class=HTMLResponse)

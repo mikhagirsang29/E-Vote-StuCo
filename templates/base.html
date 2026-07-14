@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Council Election</title>
+    <title>{{ branding.browser_title if branding and branding.browser_title else (branding.school_name if branding else 'Student Council Election') }}</title>
+    <link rel="icon" href="{{ ('/' + branding.favicon_path) if branding and branding.favicon_path and not branding.favicon_path.startswith('/') else (branding.favicon_path if branding and branding.favicon_path else '/static/favicon.ico') }}" type="image/x-icon">
     <script src="/static/tailwind.js"></script>
     <script src="/static/htmx.min.js"></script>
     <script src="/static/ws.js"></script>
@@ -17,13 +18,13 @@
             
             <!-- Left: School Branding & Logo -->
             <a href="/" class="flex items-center gap-3 group">
-                <img 
-        src="/static/logo_Sekolah.png" 
-        alt="Sekolah Kristen Tunas Daud Logo" 
-        class="w-10 h-10 sm:w-11 sm:h-11 object-contain rounded-xl group-hover:scale-105 transition-transform duration-200">
+                <img
+                    src="{{ ('/' + branding.logo_path) if branding and branding.logo_path and not branding.logo_path.startswith('/') else (branding.logo_path if branding and branding.logo_path else '/static/logo_Sekolah.png') }}"
+                    alt="{{ branding.school_name if branding else 'School' }} Logo"
+                    class="w-10 h-10 sm:w-11 sm:h-11 object-contain rounded-xl group-hover:scale-105 transition-transform duration-200">
                 <div>
-                    <span class="font-extrabold text-gray-900 tracking-tight text-base sm:text-lg block leading-none group-hover:text-blue-600 transition-colors">Sekolah Kristen Tunas Daud</span>
-                    <span class="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider">E-Voting Portal</span>
+                    <span class="font-extrabold text-gray-900 tracking-tight text-base sm:text-lg block leading-none group-hover:text-blue-600 transition-colors">{{ branding.school_name if branding else 'Sekolah Kristen Tunas Daud' }}</span>
+                    <span class="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider">{{ branding.portal_subtitle if branding else 'E-Voting Portal' }}</span>
                 </div>
             </a>
 
