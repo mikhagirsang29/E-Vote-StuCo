@@ -10,14 +10,21 @@ default admin user is
 username : admin
 password : password
 ```
-**Vote Page**<br>
-<img src="./demo_images/vote_screen.png" alt="Dashboard Screenshot" width="600">
 
-**Live Ballots Page**<br>
-<img src="./demo_images/live_ballots.png" alt="Dashboard Screenshot" width="600">
+<div align="center">
+  <h1>Vote Page</h1>
+  <img src="./demo_images/vote_screen.png" alt="Dashboard Screenshot" width="600">
+</div>
 
-**Admin Page**<br>
-<img src="./demo_images/admin.png" alt="Dashboard Screenshot" width="600">
+<div align="center">
+  <h1>Live Ballots Page</h1>
+  <img src="./demo_images/live_ballots.png" alt="Dashboard Screenshot" width="600">
+</div>
+
+<div align="center">
+  <h1>Admin Page</h1>
+  <img src="./demo_images/admin.png" alt="Dashboard Screenshot" width="600">
+</div>
 
 ---
 
