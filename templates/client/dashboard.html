@@ -32,7 +32,7 @@
             </div>
         {% else %}
             <!-- Card Grid Form -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="flex flex-wrap justify-center gap-6 p-4">
     
     {% for candidate in candidates %}
     <form hx-post="/vote" 
@@ -40,7 +40,7 @@
           hx-swap="innerHTML" 
           data-confirm="OFFICIAL BALLOT: Are you absolutely sure you want to vote for {{ candidate.name }}? This cannot be undone."
           data-candidate-card
-          class="bg-gray-900 text-white rounded-[28px] overflow-hidden shadow-xl flex flex-col justify-between border border-gray-800 hover:scale-[1.02] transition-all duration-300">
+          class="relative w-80 bg-gray-900 text-white rounded-[28px] overflow-hidden shadow-xl flex flex-col justify-between border border-gray-800 hover:scale-[1.02] transition-all duration-300">
         
         <div class="relative h-64 w-full bg-gray-800">
             {% if candidate.photo_path %}
