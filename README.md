@@ -114,8 +114,8 @@ Once your server is running (either via Docker or Uvicorn), open your web browse
 ## 📊 Performance & Stress Testing Report
 
 ### 1. Test Overview & Configuration
-We utilized Locust to simulate a high-traffic election scenario, ensuring the FastAPI backend and database can handle rapid concurrent voting.
-Configuration Parameters:
+We utilized Locust to simulate a high-traffic election scenario, ensuring the FastAPI backend and database can handle rapid concurrent voting.<br>
+Configuration Parameters:<br>
 Target Host: http://localhost:8000
 
 Peak Concurrent Users: 1,000
