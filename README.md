@@ -13,7 +13,7 @@ password : password
 
 <div align="center">
   <h2>Vote Page</h2>
-  <img src="./demo_images/vote_screen.png" alt="Dashboard Screenshot" width="600">
+  <img src="./demo_images/vote_screen_new.png" alt="Dashboard Screenshot" width="600">
 </div>
 
 <div align="center">
