@@ -150,6 +150,7 @@ async def get_live_results(request: Request, db: Session = Depends(get_db)):
 
     formatted = [
         {
+            "id": r.id,
             "name": r.name,
             "position": r.position,
             "photo_path": r.photo_path,
