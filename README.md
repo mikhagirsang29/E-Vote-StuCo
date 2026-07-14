@@ -2,6 +2,15 @@
 
 A modern, real-time, and secure LAN E-Voting web application built for student council elections. Powered by **FastAPI**, **HTMX**, **Postgresql / SQLite (WAL Mode)**, and **WebSockets** for instant live election result broadcasting without requiring browser page refreshes.
 
+## 💻 DEMO
+you can try the WebApp here :
+https://e-vote-stuco.onrender.com
+```
+default admin user is
+username : admin
+password : password
+```
+
 ---
 
 ## ✨ Features
@@ -99,23 +108,6 @@ Once your server is running (either via Docker or Uvicorn), open your web browse
 | **Voter Dashboard** | `http://localhost:8000/` | The main voting portal where students cast their ballots. |
 | **Admin Panel** | `http://localhost:8000/admin` | Manage candidates, students, and toggle the election state (`SETUP`, `OPEN`, `CLOSED`). |
 | **Live Results Feed (Admin Only when election is `OPEN`)** | `http://localhost:8000/results` | Watch live WebSocket bar charts update instantly when an election is `OPEN`, or view the trophy tally when `CLOSED`. |
-
----
-
-## 🗂️ Project Structure
-```plaintext
-voteStuco/
-├── data/                  # Persistent SQLite database folder (voting.db resides here)
-├── routes/                # Isolated FastAPI route modules (admin.py, client.py)
-├── static/                # Static assets (Tailwind CSS, HTMX, custom scripts, uploads)
-├── templates/             # Jinja2 HTML templates & HTMX fragments
-├── Dockerfile             # Container instructions (Python 3.14-slim base)
-├── docker-compose.yaml    # Container orchestration & persistent volume mappings
-├── database.py            # SQLAlchemy database setup & SQLite WAL mode pragma
-├── main.py                # FastAPI application entrypoint & WebSocket routes
-├── ws_manager.py          # Shared WebSocket connection manager
-└── requirements.txt       # Python dependency list
-```
 
 ---
 

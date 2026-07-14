@@ -22,6 +22,10 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
     return db.query(User).filter(User.student_id == student_id).first()
 
 
+def get_branding(db: Session):
+    return db.query(database.SiteBranding).filter(database.SiteBranding.id == 1).first()
+
+
 def generate_receipt_id() -> str:
     alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
     return "-".join(

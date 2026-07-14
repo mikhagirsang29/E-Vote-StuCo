@@ -61,6 +61,15 @@ class Vote(Base):
     
     voter = relationship("User", back_populates="votes")
     candidate = relationship("Candidate", back_populates="votes")
+
+class SiteBranding(Base):
+    __tablename__ = "site_branding"
+    id = Column(Integer, primary_key=True, index=True)
+    school_name = Column(String, default="Sekolah Kristen Tunas Daud")
+    portal_subtitle = Column(String, default="E-Voting Portal")
+    logo_path = Column(String, default="static/logo_Sekolah.png")
+    favicon_path = Column(String, default="static/favicon.ico")
+    browser_title = Column(String, default="Student Council Election")
     
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -71,3 +80,16 @@ columns = [column_info['name'] for column_info in inspector.get_columns('votes')
 if 'receipt_id' not in columns:
     with engine.begin() as conn:
         conn.execute(text('ALTER TABLE votes ADD COLUMN receipt_id VARCHAR'))
+
+# Add new branding columns to site_branding if missing (migrations for older DBs)
+try:
+    if 'site_branding' in inspector.get_table_names():
+        sb_columns = [c['name'] for c in inspector.get_columns('site_branding')]
+        with engine.begin() as conn:
+            if 'favicon_path' not in sb_columns:
+                conn.execute(text('ALTER TABLE site_branding ADD COLUMN favicon_path VARCHAR'))
+            if 'browser_title' not in sb_columns:
+                conn.execute(text('ALTER TABLE site_branding ADD COLUMN browser_title VARCHAR'))
+except Exception:
+    # If the table doesn't exist yet or migration fails, ignore and let create_all handle it
+    pass

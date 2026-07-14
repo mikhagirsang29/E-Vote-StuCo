@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 import database
 from database import User, Candidate, Vote, ElectionState
-from utilities.utilities import get_db, get_current_user, get_unique_receipt_id
+from utilities.utilities import get_db, get_current_user, get_unique_receipt_id, get_branding
 from routes.admin import manager  # Import the WebSocket manager from admin.py
 
 client_router = APIRouter()
@@ -17,7 +17,8 @@ templates = Jinja2Templates(directory="templates")
 async def home(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
-        return templates.TemplateResponse(request=request, name="login.html")
+        branding = get_branding(db)
+        return templates.TemplateResponse(request=request, name="login.html", context={"branding": branding})
     if user.role == "admin":
         return RedirectResponse(url="/admin", status_code=303)
 
@@ -29,11 +30,12 @@ async def home(request: Request, db: Session = Depends(get_db)):
         receipt_id = vote.receipt_id
 
     state = db.query(ElectionState).filter(ElectionState.id == 1).first()
+    branding = get_branding(db)
 
     return templates.TemplateResponse(
         request=request,
         name="client/dashboard.html",
-        context={"user": user, "candidates": candidates, "has_voted": has_voted, "status": state.status, "receipt_id": receipt_id}
+        context={"user": user, "candidates": candidates, "has_voted": has_voted, "status": state.status, "receipt_id": receipt_id, "branding": branding}
     )
 
 
