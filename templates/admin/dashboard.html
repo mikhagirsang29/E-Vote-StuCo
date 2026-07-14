@@ -33,15 +33,15 @@
     <form hx-post="/admin/branding" hx-encoding="multipart/form-data" hx-target="#branding-status" hx-swap="innerHTML" hx-on::after-request="if(event.detail.successful) this.reset()" class="grid gap-4">
         <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-center">
             <label class="text-sm font-semibold">School Name</label>
-            <input type="text" name="school_name" value="{{ branding.school_name if branding else 'Sekolah Kristen Tunas Daud' }}" class="w-full border p-2 rounded" required>
+            <input type="text" name="school_name" value="{{ branding.school_name if branding else '' }}" class="w-full border p-2 rounded" required>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-center">
             <label class="text-sm font-semibold">Portal Subtitle</label>
-            <input type="text" name="portal_subtitle" value="{{ branding.portal_subtitle if branding else 'E-Voting Portal' }}" class="w-full border p-2 rounded" required>
+            <input type="text" name="portal_subtitle" value="{{ branding.portal_subtitle if branding else '' }}" class="w-full border p-2 rounded" required>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-center">
             <label class="text-sm font-semibold">Browser Title</label>
-            <input type="text" name="browser_title" value="{{ branding.browser_title if branding else 'Student Council Election' }}" class="w-full border p-2 rounded">
+            <input type="text" name="browser_title" value="{{ branding.browser_title if branding else '' }}" class="w-full border p-2 rounded">
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 items-center">
             <label class="text-sm font-semibold">Logo Image</label>

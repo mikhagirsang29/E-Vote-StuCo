@@ -380,12 +380,25 @@ async def update_site_branding(
         branding = SiteBranding(id=1)
         db.add(branding)
 
+    # Keep references to previous uploaded files so we can delete them after a successful upload
+    old_logo = branding.logo_path if branding and branding.logo_path else None
+    old_favicon = branding.favicon_path if branding and getattr(branding, 'favicon_path', None) else None
+
     if logo and logo.filename:
         ext = logo.filename.split(".")[-1]
         unique_filename = f"{uuid.uuid4()}.{ext}"
         filepath = f"static/uploads/{unique_filename}"
         with open(filepath, "wb") as buffer:
             shutil.copyfileobj(logo.file, buffer)
+        # Delete previous uploaded logo if it was stored under static/uploads
+        try:
+            if old_logo and (old_logo.startswith("static/uploads/") or old_logo.startswith("/static/uploads/")):
+                old_path = old_logo.lstrip('/')
+                if os.path.exists(old_path):
+                    os.remove(old_path)
+        except Exception as e:
+            print(f"Warning: could not delete old logo {old_logo}. Error: {e}")
+
         branding.logo_path = filepath
 
     if favicon and favicon.filename:
@@ -394,6 +407,15 @@ async def update_site_branding(
         fpath = f"static/uploads/{funique}"
         with open(fpath, "wb") as buffer:
             shutil.copyfileobj(favicon.file, buffer)
+        # Delete previous uploaded favicon if it was stored under static/uploads
+        try:
+            if old_favicon and (old_favicon.startswith("static/uploads/") or old_favicon.startswith("/static/uploads/")):
+                old_fpath = old_favicon.lstrip('/')
+                if os.path.exists(old_fpath):
+                    os.remove(old_fpath)
+        except Exception as e:
+            print(f"Warning: could not delete old favicon {old_favicon}. Error: {e}")
+
         branding.favicon_path = fpath
 
     branding.school_name = school_name.strip() or branding.school_name or "Sekolah Kristen Tunas Daud"
@@ -491,3 +513,92 @@ async def change_election_status(request: Request, status: str = Form(...), db: 
     await FastAPICache.clear()
 
     return HTMLResponse(f"<span class='font-bold text-blue-600 uppercase'>{status}</span>")
+
+# ==========================================
+# 1. EDIT CANDIDATE ENDPOINT
+# ==========================================
+@admin_router.post("/admin/candidates/{candidate_id}/edit")
+async def edit_candidate(
+    request: Request,
+    candidate_id: int,
+    name: str = Form(...),
+    position: str = Form(...),
+    manifesto: str = Form(""), # Added manifesto field
+    photo: Optional[UploadFile] = File(None),
+    db: Session = Depends(get_db)
+):
+    user = get_current_user(request, db)
+    if not user or user.role != "admin":
+        return HTMLResponse("Unauthorized", status_code=403)
+
+    # Find the candidate in the database
+    candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
+    if not candidate:
+        return HTMLResponse("Candidate not found", status_code=404)
+
+    # Update text fields
+    candidate.name = name
+    candidate.position = position
+    
+    # NOTE: Ensure your Candidate model in models.py actually has a 'manifesto' column!
+    # If it doesn't, you need to add it to models.py: manifesto = Column(String, default="")
+    if hasattr(candidate, 'manifesto'):
+        candidate.manifesto = manifesto
+
+    # Handle the photo replacement logic
+    if photo and photo.filename:
+        # 1. Delete the OLD photo from the server storage
+        if candidate.photo_path:
+            # Strip the leading slash (e.g., "/static/uploads/file.png" -> "static/uploads/file.png")
+            old_file_path = candidate.photo_path.lstrip("/")
+            
+            # Check if the file physically exists on the hard drive, then delete it
+            if os.path.exists(old_file_path):
+                try:
+                    os.remove(old_file_path)
+                except Exception as e:
+                    print(f"Error deleting old photo: {e}")
+
+        # 2. Save the NEW photo
+        ext = photo.filename.split(".")[-1]
+        new_filename = f"{uuid.uuid4().hex}.{ext}"
+        new_file_path = os.path.join("static", "uploads", new_filename)
+        
+        with open(new_file_path, "wb") as buffer:
+            shutil.copyfileobj(photo.file, buffer)
+        
+        # 3. Update the database record with the new path
+        candidate.photo_path = f"/{new_file_path}"
+
+    db.commit()
+    
+    # Reload the admin dashboard so the changes reflect instantly
+    return RedirectResponse(url="/admin", status_code=303)
+
+
+# ==========================================
+# 2. DELETE INDIVIDUAL STUDENT ENDPOINT
+# ==========================================
+@admin_router.delete("/admin/users/{user_id}", response_class=HTMLResponse)
+async def delete_single_student(request: Request, user_id: str, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+    if not user or user.role != "admin":
+        return HTMLResponse("Unauthorized", status_code=403)
+
+    # Find the student
+    target_user = db.query(User).filter(User.student_id == user_id, User.role == "student").first()
+    if not target_user:
+        return HTMLResponse("Student not found", status_code=404)
+
+    # # 1. Delete their votes first to prevent foreign key constraint errors
+    # db.query(Vote).filter(Vote.user_id == user_id).delete(synchronize_session=False)
+    
+    # 2. Delete the student account
+    db.delete(target_user)
+    db.commit()
+    
+    # 3. Clear cache so the table updates
+    await FastAPICache.clear()
+
+    # 4. Return an empty string. HTMX will use this to instantly remove the row from the table!
+    return HTMLResponse("")
