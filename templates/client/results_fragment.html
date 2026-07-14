@@ -24,7 +24,7 @@
 <div class="flex justify-center items-end gap-4 sm:gap-8 min-h-[340px] pt-8 pb-6 border-b-2 border-gray-100 overflow-x-auto">
     
     {% for candidate in results %}
-        {% set color_idx = loop.index0 % 5 %}
+        {% set color_idx = (candidate.id - 1) % 5 %}
         
         <div class="flex flex-col items-center flex-1 min-w-[90px] max-w-[140px]">
             
