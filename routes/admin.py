@@ -512,7 +512,7 @@ async def change_election_status(request: Request, status: str = Form(...), db: 
     db.commit()
     await FastAPICache.clear()
 
-    return HTMLResponse(f"<span class='font-bold text-blue-600 uppercase'>{status}</span>")
+    return HTMLResponse(f"<span class='font-bold text-yellow-400 uppercase'>{status}</span>")
 
 # ==========================================
 # 1. EDIT CANDIDATE ENDPOINT
