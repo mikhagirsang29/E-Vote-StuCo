@@ -19,4 +19,4 @@ ENV DATABASE_URL=postgresql://postgres:postgres@postgres:5432/voting_db
 RUN mkdir -p /app/static/uploads
 
 EXPOSE 8000
-CMD ["sh", "-c", "python wait_for_postgres.py && uvicorn main:app --host 0.0.0.0 --port 8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

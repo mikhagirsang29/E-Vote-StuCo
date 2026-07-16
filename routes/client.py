@@ -96,5 +96,7 @@ async def submit_vote(request: Request, candidate_id: int = Form(...), db: Sessi
         )
     except Exception as e:
         db.rollback()
+        traceback.print_exc()
+
         return HTMLResponse("<div class='p-4 bg-red-100 text-red-700 rounded'>Error: You have already voted.</div>")
 

@@ -13,7 +13,7 @@ password : password
 
 <div align="center">
   <h2>Vote Page</h2>
-  <img src="./demo_images/vote_screen.png" alt="Dashboard Screenshot" width="600">
+  <img src="./demo_images/vote_screen_new.png" alt="Dashboard Screenshot" width="600">
 </div>
 
 <div align="center">
@@ -142,20 +142,20 @@ locust -f locustfile.py --headless -u 1000 -r 50 --run-time 2m --host=http://loc
 ```
 
 ### 2. Key Metrics Monitored
-- When evaluating the Locust output, we looked for the following health indicators:<br>
+When evaluating the Locust output, we looked for the following health indicators:<br>
 - RPS (Requests Per Second): Indicates the throughput of the server.<br>
 - Failure Rate: Ideally 0%. Failures usually indicate database locks, connection pool exhaustion, or server timeouts.<br>
 - Response Times: We aim for < 500ms median response times.<br>
 
 ### 3. Test Results
-- The test successfully simulated 1,000 concurrent students logging in and casting their votes over a 2-minute window.<br>
+The test successfully simulated 1,000 concurrent students logging in and casting their votes over a 2-minute window.<br>
 - Total Requests: 2,000 (1,000 Logins, 1,000 Votes)<br>
 - Failures: 0 (0.00%) 🎉<br>
 - Average RPS: 89.20 req/s<br>
 - Response Time: Median: 190 ms | Average: 547 ms<br>
 
 ### 4. Analysis & Architecture Validation
-- The server handled the 1,000-user stress test flawlessly with a 0% failure rate.<br>
+The server handled the 1,000-user stress test flawlessly with a 0% failure rate.<br>
 - Database Stability: Handling 1,000 simultaneous writes without a single database lock or dropped transaction proves the architecture is highly resilient under load.<br>
 - Real-time Performance: The FastAPI WebSocket ConnectionManager successfully maintained the connections and broadcasted 1,000 real-time HTMX snippet updates without crashing the asynchronous event loop.<br>
 
